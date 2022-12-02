@@ -1,0 +1,98 @@
+import sys
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+import threading
+
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        widget = QWidget()
+        self.setCentralWidget(widget)
+        grid = QGridLayout()
+        widget.setLayout(grid)
+        self.setWindowTitle("Chronometre")
+        
+
+        self.timer = QTimer
+        self.timer= QLineEdit()
+        self.timer.setPlaceholderText("0")
+        self.messagetext = QLabel("Compteur : ")
+        self.commandstart = QPushButton("Start")
+        self.commandstop = QPushButton("Stop")
+        self.commandreset = QPushButton("Reset")
+        self.commandquit = QPushButton("Quitter")
+        self.commandconnect = QPushButton("Connect")
+
+
+        grid.addWidget(self.messagetext, 0, 0)
+        grid.addWidget(self.timer, 2, 0, 1, 2)
+       
+        grid.addWidget(self.commandstart, 3, 0, 1, 2)
+        grid.addWidget(self.commandreset, 5, 0)
+        grid.addWidget(self.commandstop, 5, 1)
+        grid.addWidget(self.commandconnect, 6, 0)
+        grid.addWidget(self.commandquit, 6, 1)
+
+        if self.commandquit.clicked.connect(self.close):
+            global __stop
+            __stop = True
+            self.close()
+        else:
+            pass
+
+
+
+        self.commandstart.clicked.connect(self.__start)
+        self.commandstop.clicked.connect(self.__stop)
+        self.commandreset.clicked.connect(self.__reset)
+        #self.pressbuttonconnect(self.__connect)
+
+        #démarrera le comptage et affichera la valeur + 1 dans la partie texte et thread
+        
+        def __start(self):
+            try:
+                self.timer.start(1000)
+                self.timer.timeout.connect(self.__update)
+            except threading.ThreadError:
+                print("Erreur de thread")
+            except ValueError:
+                print("Erreur, vous ne pouvez pas écrire dans le chronometre")
+            finally:   
+                self.timer.start(1000)
+                self.timer.timeout.connect(self.__update)       
+        
+        #arrêtera le comptage
+        def __stop(self):
+            try:
+                self.timer.stop()
+            except threading.ThreadError:
+                print("Erreur de thread")
+            finally:
+                self.timer.stop()
+
+        #remettra le compteur à 0
+        def __reset(self):
+            try:
+                self.timer.stop()
+                self.timer.setPlaceholderText("0")
+            except threading.ThreadError:
+                print("Erreur de thread")
+            except ValueError:
+                print("Vous ne pouvez pas écrire dans le chronometre")
+
+
+
+
+
+def main():
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())
+   
+  
+
+if __name__ == '__main__':
+    main()
